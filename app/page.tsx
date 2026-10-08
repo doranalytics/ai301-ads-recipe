@@ -1,0 +1,41 @@
+"use client";
+import { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { ArrowUpRight, Check, Copy, Download, ChevronDown } from "lucide-react";
+import recipe from "../content/recipe.json";
+
+const repo = "https://github.com/doranalytics/ads-harness";
+const deploy = "https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdoranalytics%2Fads-harness&project-name=my-ads-harness&repository-name=my-ads-harness&env=NEXT_PUBLIC_DEMO&envDefaults=%7B%22NEXT_PUBLIC_DEMO%22%3A%221%22%7D&envDescription=Keep%20NEXT_PUBLIC_DEMO%3D1%20for%20the%20credential-free%20class%20demo";
+
+export default function Home() {
+  const [copied, setCopied] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [copyError, setCopyError] = useState(false);
+  async function copyRecipe() {
+    try { await navigator.clipboard.writeText(recipe); setCopied(true); setCopyError(false); }
+    catch { setCopyError(true); setExpanded(true); }
+  }
+  return <>
+    <a className="skip" href="#recipe">Skip to full recipe</a>
+    <header><a className="brand" href="https://join.how-to-ai.guide">how to ai<span>®</span></a><div className="class-label">301 <span>FRI OCT 9, 2026</span></div></header>
+    <main>
+      <section className="hero" aria-labelledby="hero-heading">
+        <div><p className="eyebrow">A tool for the decisions you already make</p><h1 id="hero-heading">Your posts.<br/>Your ads.<br/><em>One place.</em></h1><p className="intro">Build your own ads harness. Start with a working demo, ask AI for one useful change, then connect the data your business actually tracks.</p><div className="actions"><button className="primary" onClick={copyRecipe}>{copied ? <Check size={17}/> : <Copy size={17}/>} {copied ? "Recipe copied" : "Copy full recipe"}</button><a className="text-link" href="https://ads-harness.vercel.app">Try the demo <ArrowUpRight size={15}/></a></div><p className="small">For Codex or Claude Code. No tokens needed to begin.</p></div>
+        <div className="blueprint" aria-label="Illustration of the sample ads harness workflow">
+          <div className="blueprint-top"><span>YOUR ADS HARNESS</span><span className="sample">INVENTED EXAMPLE</span></div>
+          <div className="post-preview"><div className="coffee-art" aria-hidden="true"><div className="coffee-bag"><span>COFFEE<br/>FOR THE<br/>EVERYDAY.</span><i/></div></div><div><span className="mono">01 / PUBLIC POSTS</span><h3>A post worth testing.</h3><p>Views, likes, comments.<br/>Unknown stays unknown.</p><span className="source">Instagram · Apify</span></div></div>
+          <div className="connector-line" aria-hidden="true"><span>↓</span><i/></div>
+          <div className="metrics-preview"><div><span className="mono">02 / PAID REPORTING</span><h3>What happened next?</h3></div><div className="metric"><span>Spend</span><strong>$80</strong></div><div className="metric"><span>Results</span><strong>8</strong></div><div className="metric"><span>Cost / result</span><strong>$10</strong></div><svg viewBox="0 0 300 54" role="img" aria-label="Invented cost trend"><path d="M0 40H300M0 20H300" stroke="currentColor" opacity=".12"/><path d="M2 40L42 35L85 38L125 24L166 28L206 12L248 19L298 8" fill="none" stroke="#ff6719" strokeWidth="2"/></svg></div>
+          <div className="blueprint-bottom"><span>03 / TRY SAFELY</span><span>Paused draft → review → confirm</span></div>
+        </div>
+      </section>
+      <section className="start" aria-labelledby="start-heading"><div><p className="eyebrow">The first fifteen minutes</p><h2 id="start-heading">Get it working.<br/>Make it yours.</h2><p>Leave the account setup for later. Everyone can start from the same sample app.</p></div><ol className="steps"><li><span>01</span><div><h3>Copy the recipe into your coding assistant.</h3><p>It installs the public starter locally and checks the demo. Node 22.13+ is the only runtime you need.</p></div></li><li><span>02</span><div><h3>Tell it how your business works.</h3><p>Your offering, markets, goals and tracked events shape the metrics and charts. Missing tracking stays a gap.</p></div></li><li><span>03</span><div><h3>Make one change, then share your demo.</h3><p>Use your own GitHub copy and the Vercel UI. The guided deploy keeps sample mode on.</p><a className="text-link" href={deploy}>Deploy your demo <ArrowUpRight size={14}/></a><a className="text-link repo-link" href={repo}>Public GitHub starter <ArrowUpRight size={14}/></a></div></li></ol></section>
+      <section className="chat" aria-labelledby="chat-heading"><div><p className="eyebrow">Use it from chat, too</p><h2 id="chat-heading">Ask your data.<br/>Build the chart you need.</h2></div><div><p>The custom Ads Harness MCP gives Codex and Claude Code read-only access to organic posts, paid reporting and daily time series.</p><blockquote>“Ask me what outcome I track. Show the last seven days for comparable ads, then add a chart to my local dashboard.”</blockquote><p className="small">The local adapter reads the harness. Meta stays connected through its API. Ad actions and paid scrapes are outside the MCP tools.</p><a className="text-link" href={`${repo}/blob/main/docs/mcp-setup.md`}>MCP setup and chart prompts <ArrowUpRight size={14}/></a></div></section>
+      <section className="stages" aria-labelledby="stages-heading"><p className="eyebrow">Choose your next checkpoint</p><h2 id="stages-heading">One connection at a time.</h2><div className="stage-grid"><article><span className="mono">START HERE</span><h3>Working demo</h3><p>Local app, your name, one useful change. Optional GitHub + Vercel demo. No business credentials.</p></article><article><span className="mono">WHEN YOU'RE READY</span><h3>Your public posts</h3><p>Your Supabase project, an Apify token and a public Instagram handle. Check actor costs before syncing.</p></article><article><span className="mono">OWNED BUSINESS DATA</span><h3>Meta reporting</h3><p>Assigned business assets and an app-associated System User token. Begin with ad actions off.</p></article></div><p className="truth">Meta's System User token flow requires selecting a Meta app. This starter needs no app ID/secret env pair. It creates paused ads inside an existing ad set; campaign setup and activation remain separate choices.</p></section>
+      <section id="recipe" className="recipe" aria-labelledby="recipe-heading"><div className="recipe-heading"><div><p className="eyebrow">The whole build recipe</p><h2 id="recipe-heading">Copy this. Keep it open.</h2><p>Local install, the business interview, GitHub and Vercel, connector setup, MCP and checks.</p></div><a className="download" href="/build-recipe.md" download><Download size={16}/> Download recipe</a></div><div className="recipe-toolbar"><span>ADS HARNESS / FULL PROMPT</span><button onClick={copyRecipe}>{copied ? <Check size={15}/> : <Copy size={15}/>} {copied ? "Copied" : "Copy all"}</button></div><p className="status" aria-live="polite">{copied ? "Full recipe copied. Paste it into your coding assistant." : copyError ? "Clipboard access is unavailable. Download the recipe or select the text below." : ""}</p><div className={`recipe-body ${expanded ? "expanded" : ""}`}><ReactMarkdown remarkPlugins={[remarkGfm]}>{recipe}</ReactMarkdown></div><button className="expand" onClick={()=>setExpanded(!expanded)} aria-expanded={expanded}>{expanded ? "Collapse recipe" : "Read full recipe"}<ChevronDown size={15} style={{transform:expanded?"rotate(180deg)":undefined}}/></button></section>
+      <section className="class-notes"><div><p className="eyebrow">For the room</p><h2>A working tool.<br/>A clearer next step.</h2></div><div><p>Today's goal is a working copy and one useful change. Live permissions can take longer. The recipe keeps each prerequisite visible so you can pick up at the next unfinished step.</p><a className="download" href="/class-talking-framework.md" download><Download size={16}/> Download class talking framework</a></div></section>
+      <footer><span>how to ai · 301 · October 9, 2026</span><div><a href={repo}>Starter source</a><a href="https://github.com/doranalytics/ai301-ads-recipe">Recipe source</a></div></footer>
+    </main>
+  </>;
+}
