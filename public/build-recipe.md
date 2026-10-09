@@ -1,6 +1,6 @@
 # How to AI 301: build your ads harness
 
-Friday, October 9, 2026. Start with a working demo, make it yours, then connect your own data.
+Friday, October 9, 2026. Start with an empty local interface, shape it around your goals, then optionally connect your accounts.
 
 Copy this whole recipe into a coding assistant that can work with local files, such as Codex or Claude Code. Keep this page open for the GitHub, Vercel and connector steps.
 
@@ -10,11 +10,27 @@ Help me install and personalize the public ads harness at https://github.com/dor
 
 Work in small steps. Inspect the project and its AGENTS.md first. Explain what each step gives me. Ask one question at a time when an answer affects the next step. Proceed with local, reversible work. Guide me through account and credential screens myself. Do not create accounts, accept terms, buy anything, run paid scrapes or activate ads on my behalf.
 
-Keep the first installation in demo mode. The demo contains invented coffee-brand examples, requires no tokens and sends nothing to Meta, Apify or Supabase. Never substitute demo numbers for live numbers. Do not paste tokens into chat, commits, screenshots, URLs or client-side code. Tell me where to paste a secret privately in the app or the provider's environment-variable form.
+Start in a local, unconnected setup mode with empty reporting. The starter ships with coffee sample data: implement the empty setup experience before presenting it as my app. Do not merely hide the demo badge or change the brand name. Keep sample data available only through an explicit optional sample-preview choice, clearly labeled. No connection or measurement exists until verified. Never substitute demo numbers for live numbers. Do not paste tokens into chat, commits, screenshots, URLs or client-side code. Tell me where to paste a secret privately in the app or the provider's environment-variable form.
+
+## Product experience: one ads workspace, dashboard and chat
+
+Build for beginners who do not use Ads Manager every day. Present the UI and assistant chat as two ways to work with the same business and ad account. Explain Meta Business portfolio / Business Manager in plain language as the place that owns assets and grants access. Keep technical connection details inside guided setup, not the main decision screens.
+
+Both surfaces must support ad management, not just reporting. From the dashboard, I want to prepare and launch ads, promote eligible posts, pause/resume ads, and manage supported budgets/settings. From my chosen chat interface, I want to perform those same supported actions conversationally. Do not move dashboard actions exclusively into chat or reduce the dashboard to a read-only view. Treat launching as a reviewed draft followed by explicit confirmation to activate delivery. Clearly distinguish ad-level status from campaign/ad-set status and explain why a paused parent can prevent delivery.
+
+Implement and verify dashboard actions and chat tools separately against the same account; label unavailable actions and their prerequisites. The requirement describes the intended product, not proof the starter or an installed MCP already supports every action. Keep both surfaces consistent by refreshing actual Meta state after changes. Never present a disconnected, demo or unsupported action as completed.
+
+The intended completed experience includes both the app’s direct Meta connection for dashboard reporting/actions and a verified Meta Ads MCP connection in the chosen assistant for supported chat actions. The read-only Harness MCP additionally lets the assistant inspect the dashboard’s stored reports and planning context. Reuse the same confirmed business/ad account selection across these paths; verify IDs match without exposing credentials. Authorization for one connection does not automatically authorize the others. Explain any separate login once at the appropriate step; do not promise a shared OAuth flow the starter does not implement.
+
+At the final connection stage, offer one coordinated walkthrough: prepare Meta business assets and permissions → connect dashboard reporting → connect assistant tools → verify both show the same account → review optional ad actions. Every step supports later/skip, and selecting Instagram does not require a handle or Apify setup immediately. Preserve Instagram as a selected, unconnected channel until configured. Explain Apify separately as optional public-content collection; it is not a prerequisite for every Meta ad workflow.
+
+The intended chat workflow can draft and, with explicit confirmation, create or run ads through the verified Meta MCP tools. Inspect actual tool capabilities first. The starter’s UI only creates paused ads inside an existing ad set and does not create campaigns/ad sets; a different MCP may support more. If an action is unavailable, clearly identify the gap and implement only agreed supported functionality rather than pretending it works. Before any spend-changing action in either surface, show account, objective, campaign/ad set, audience, creative, destination, budget/currency and requested change, and obtain explicit confirmation. Begin with reporting access and paused drafts; enabling live delivery is a separate explicit decision.
+
+Show shared workflow status in the UI where supported: planned, draft/paused, active, or connection needed. After chat actions, refresh the dashboard from Meta and verify the resulting state rather than leaving two conflicting views. Explain reporting freshness and attribution delays. Do not claim chat actions or cross-surface refresh have been implemented until verified.
 
 ## 1. Get a working local app
 
-If I already opened the starter folder, use it. Otherwise guide me to GitHub → the repository → **Use this template → Create a new repository**, choose a name, and save it in my own GitHub account. Public source is fine; business credentials and private data never belong in the repository. I can choose a private copy for my business.
+If I already opened the starter folder, use it. Otherwise clone or download the public starter locally. Do not ask me to create a GitHub repository or deploy yet. Reuse accounts and tooling already set up in AI 201 after checking what is available; each new project still needs its own configuration.
 
 For a local copy, I can use GitHub Desktop → **File → Clone repository**, or GitHub → **Code → Download ZIP**, unzip it, and open that folder in the coding assistant. If Git is already installed, use:
 
@@ -27,39 +43,41 @@ npm run demo
 
 Check Node.js first. Use Node 22.13 or newer; an active Node LTS is appropriate. If it is missing, guide me to https://nodejs.org and its installer for my operating system, then reopen the terminal. Do not require Docker, a database or a Vercel CLI for the demo.
 
-Run the install in the project folder. `npm run demo` starts at http://localhost:3000 with demo mode forced on and live Meta actions off. If the port is occupied, use `npm run demo -- --port 3001` and give me that URL. Open the app and verify Organic, Paid, Connectors and Settings. A visible demo badge must remain. A demo button must explain that it sends nothing rather than pretending to save a change.
+Run the install in the project folder. Use `npm run demo` only as an initial technical check of the starter. Before handing it back, implement and start the empty, unconnected setup experience without requiring Supabase or credentials. Open the app and verify Organic, Paid, Connectors and Settings. If port 3000 is occupied, choose another port and give me its URL.
 
-Do not ask me for any business tokens before this checkpoint. Success: I can open the local demo and explain what a post, an ad, an ad set and a campaign are.
+Initially show no coffee posts, campaigns, ads, spend, results, alert thresholds or enabled automation. Show useful empty states explaining what will appear after setup. Unknown measurements are dashes, not zero. Label the app “Not connected”; reserve “Demo / sample data” for an explicitly selected sample preview. Keep live ad actions disabled.
 
-## 2. Make one useful change
+## 2. Populate the interface through a short conversation
 
-Ask for my business name and the decision I want this tool to help me make. Use `NEXT_PUBLIC_BRAND_NAME` for the name and keep the existing navigation and data contract. If I ask for a UI change, implement one small change first, check it at desktop and phone width, and show it to me.
+First explain the walkthrough: empty app → name and goal → channels/accounts → success targets → personalized UI review → optional deployment → optional connections and chat tools. Explain each proposed change before making it. Ask one concise question at a time and apply confirmed answers progressively so I can see the interface taking shape.
 
-Keep the business interview short and adaptive. Begin with three questions, then ask only for gaps relevant to my goal:
+Ask only for:
 
-1. What do I sell, who buys it, and which markets/geographies or audiences do I already serve or want to test?
-2. What outcome do I want: awareness, visits, leads, sign-ups, purchases or installs? Which actual events are tracked, and is the pixel/dataset or other conversion tracking verified?
-3. What campaigns do I run or plan, what budget/currency am I considering, and how do I judge success? CPA/ROAS targets and attribution windows may be unknown.
+1. A display name and a brief description of what I sell or the decision I want to make. Do not require a branding exercise, brand assets or a long business interview.
+2. Which channels I participate in: Instagram, TikTok, YouTube and X. Ask for relevant handles when useful; every account can be added later or skipped. Populate channel navigation and account cards from my choices. Distinguish selected, configured, connected and successfully synced. Verify the starter supports each requested connector before promising live data.
+3. My primary outcome: awareness, visits, leads, sign-ups, purchases or installs. Ask whether relevant events are actually tracked; defer technical tracking setup until the connection stage.
+4. Budget and currency, target cost per result, desired ROAS or ROI, and the measurement window. “I don't know yet” is valid. Explain that ROAS needs attributed revenue and ROI needs relevant costs/profit inputs. Do not invent targets, revenue or conversions.
+5. Whether I want alerts, the threshold and measurement window, and where I expect to receive them. Explain the difference between an in-app indicator, an external notification and automatic ad pausing. Verify which exist; implement agreed local indicators and clearly identify any unconfigured delivery. Never present auto-off as on by default.
 
-Summarize my offering, described markets, objective, tracked events, campaign types, currency/budget, primary metric, target CPA/ROAS if known, and attribution window. Propose a small dashboard and campaign plan for my confirmation. Leads, registrations and purchases are distinct outcomes. If conversion tracking or revenue is absent, show that gap rather than manufacturing conversions, ROAS or a target. Do not infer sensitive audience traits or auto-launch based on this interview.
+Summarize my answers and propose appropriate campaign names, primary metrics and a small dashboard. After confirmation, populate planned campaign cards, channel/account cards, target settings and useful empty charts. Label campaigns “Planned / not launched”; do not claim to create Meta campaigns or change imported live campaign names. Keep actual reporting empty until a successful sync. Only create invented sample creative or measurements if I explicitly ask for a sample preview.
 
-After I confirm, save these nonsecret planning inputs in the ignored `.business-profile.local.json`, following `mcp/business-profile.example.json` and the schema in `mcp/analytics.mjs`. Unknown targets/budget remain null. Keep my private business plan out of a public commit. Use it to select the relevant views and charts. The starter does not fetch geographic/audience breakdowns; described target markets guide a plan, not a claim of measured audience performance.
+Persist confirmed nonsecret inputs locally across restarts. Follow `.business-profile.local.json`, `mcp/business-profile.example.json` and `mcp/analytics.mjs` where applicable, and extend the local schema/UI if necessary for channels and alert preferences. Do not claim those existing fields already support the whole onboarding flow. Unknown targets/budgets remain null. Keep private business inputs out of public commits. Production must use an appropriate private persistence path rather than relying on a local ignored file being deployed.
 
-Suggested first request: “Make the tool feel like my business. Keep the demo badge. Improve the explanation of cost per result so I can tell whether a post is worth trying as an ad.”
+Show the personalized UI at desktop and phone width. Explain how targets will be evaluated once real data arrives, what remains empty, and which alerts are operational. Complete this checkpoint before offering GitHub or Vercel. Do not launch ads or automatically pause them based on onboarding answers.
 
 Never invent live measurements. Public Instagram data may have missing views, shares or saves. A dash means unknown; zero means measured zero. Apify public counts do not prove how much traffic was organic rather than paid. The harness's Meta “results” are the first recognized action it finds: purchase, lead, registration, install, then link click. Check the result label and Ads Manager before comparing ads with different objectives. The current currency display uses dollar formatting and budget conversion assumes two decimal minor units; verify the ad account currency before using live budgets.
 
-## 3. Put my demo on Vercel using the UI
+## 3. Optional: save and deploy the personalized interface
 
-Easiest route: open the README's **Deploy demo** button. Sign into GitHub and Vercel, let the flow create my repository/project, and keep `NEXT_PUBLIC_DEMO=1`. The button contains only public configuration. Choose my own account/team and deploy. I need no Supabase, Apify or Meta account for this version.
+Only offer this after the personalized local UI has been reviewed. I can skip deployment and continue locally. Explain that the README deploy button installs the upstream starter, not my local customization; deploy my own changed repository to preserve this work. For a separate unchanged sample, open the README's **Deploy demo** button. Sign into GitHub and Vercel, let the flow create my repository/project, and keep `NEXT_PUBLIC_DEMO=1`. The button contains only public configuration. Choose my own account/team and deploy. I need no Supabase, Apify or Meta account for this version.
 
 If I already made a GitHub copy: Vercel dashboard → **Add New → Project → Import Git Repository** → select my copy. Framework: Next.js. Root directory: repository root. Add `NEXT_PUBLIC_DEMO` with value `1`, then **Deploy**. Leave live action variables unset.
 
 Open the resulting production URL on desktop and phone. Check the demo badge, Organic and Paid, and confirm no real account data appears. GitHub changes deploy through the connected repository. This lesson's separate recipe is https://ai301-ads-recipe.vercel.app and its shared demo is https://ads-harness.vercel.app.
 
-## 4. Prepare a private live data connection
+## 4. Final optional stage: explain connections, then prepare private live data
 
-This is optional after the class demo. Only continue when I choose to connect my own business. This starter has a shared owner password, not individual user accounts or a client onboarding/OAuth flow. Use it for a business I control.
+After the UI checkpoint (and deployment only if chosen), explain Apify public-content collection, the app’s direct Meta Ads reporting connection, and MCP chat access. Offer “connect now”, “later” or “skip” separately for each. Explain prerequisites and credential fields before asking me to fill them in. Walk through the selected setup one step at a time, naming each field, where to find it, where to enter it privately, and how to verify success. Keep skipped account cards visibly unconnected. Only continue when I choose to connect my own business. This starter has a shared owner password, not individual user accounts or a client onboarding/OAuth flow. Use it for a business I control.
 
 Create my own Supabase project in its dashboard. Open **SQL Editor → New query** and run the complete `supabase/setup.sql` once in a fresh database. For an existing harness database, apply only missing numbered files in `supabase/migrations/`; do not rerun the fresh schema over it.
 
@@ -93,7 +111,7 @@ Verify my handle and real posts appear in Organic. If the scrape fails, inspect 
 
 This harness calls Meta's Graph/Marketing API directly. It does not use Meta MCP or the coding assistant's Meta connector. It has no Facebook Login OAuth onboarding. The default API version is `v26.0`, configurable with server-only `META_GRAPH_VERSION`; check Meta's current supported Marketing API versions if requests fail.
 
-Required pieces: my Meta Business portfolio, an ad account, a Facebook Page, a professional Instagram account linked to that Page, and permission to assign those assets. For promoting posts I also need an existing campaign and ad set with a suitable objective, audience, budget, placement and billing setup. The harness creates ads inside that ad set; it does not create campaigns/ad sets, install a pixel, upload new creative or decide an audience.
+Explain that requirements depend on scope: reporting needs access to my ad account and an appropriate token; Instagram identity and post-promotion features additionally need the relevant Page/professional Instagram linkage. Use `docs/meta-business-setup.md` to guide the chosen scope. The full owned-business promotion setup includes my Meta Business portfolio (Business Manager), an ad account, a Facebook Page, a professional Instagram account linked to that Page, and permission to assign those assets. For promoting posts I also need an existing campaign and ad set with a suitable objective, audience, budget, placement and billing setup. The harness creates ads inside that ad set; it does not create campaigns/ad sets, install a pixel, upload new creative or decide an audience.
 
 **A Meta app is part of token issuance.** Meta's System User token flow asks me to select an app connected to my business. Create/select an app with a Marketing API use case in Meta for Developers, associate it with my portfolio, then use **Business settings → Users → System users** to create an appropriate system user and assign the app, ad account, Page and Instagram assets. Generate its access token. Use the expiration choices Meta actually offers; tokens can be revoked or invalidated even if no expiry is chosen.
 
@@ -117,7 +135,7 @@ Turning auto-off off prevents future pauses; setting `META_WRITES_ENABLED=0` dis
 
 ### Optional: talk to the harness through MCP
 
-Install the **custom Ads Harness MCP** using `docs/mcp-setup.md`. It is not Meta's official MCP server. It runs locally over stdio and reads the harness's stored organic/paid reporting; it exposes no ad actions, sync or paid scraper tools. The default connection queries only the public invented demo and needs no credential.
+At the very end, ask whether I want to talk to my ads in this coding assistant. Explain that MCP connects the assistant to a tool server; it does not need to be embedded in the app UI. The app still needs its own configured data connections. Offer the existing **custom Ads Harness MCP** using `docs/mcp-setup.md`. It is a real MCP connection to the harness, not a direct Meta Ads MCP connection. If I specifically want a separate Meta Ads MCP, first identify and verify the chosen server/provider, current installation instructions, permissions and available tools. Do not claim one is bundled, official or installed. Explain its credential fields and read/write scope before setup, and verify tool discovery and a read-only reporting call afterward. I can skip it. Installing any MCP in Claude Code does not automatically install it in Codex or other chats. It runs locally over stdio and reads the harness's stored organic/paid reporting; it exposes no ad actions, sync or paid scraper tools. The default connection queries only the public invented demo and needs no credential.
 
 For Codex: `codex mcp add ads-harness -- node /absolute/path/to/ads-harness/scripts/mcp-server.mjs`. For Claude Code: `claude mcp add --transport stdio --scope local ads-harness -- node /absolute/path/to/ads-harness/scripts/mcp-server.mjs`. Replace the path and reconnect the client. Use the same direct Node command in Codex's STDIO MCP settings if using the app/IDE. Do not run configuration commands for me until I request installation.
 
